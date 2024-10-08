@@ -4,6 +4,10 @@ from si.base.estimator import Estimator
 from si.data.dataset import Dataset
 import numpy as np
 
+import numpy as np
+
+from si.data.dataset import Dataset
+
 
 class Model(Estimator, ABC):
     """
@@ -17,7 +21,7 @@ class Model(Estimator, ABC):
         """
         super().__init__(**kwargs)
 
-    def predict(self, dataset):
+    def predict(self, dataset) -> np.ndarray:
         """
         Predict the target values of the dataset.
         The model needs to be fitted before calling this method.
@@ -70,7 +74,7 @@ class Model(Estimator, ABC):
         """
         self.fit(dataset)
         return self.predict(dataset)
-
+    
     @abstractmethod
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
         """

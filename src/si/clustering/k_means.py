@@ -102,7 +102,7 @@ class KMeans(Transformer, Model):
             KMeans object.
         """
         # Generate initial centroids
-        self._init_centroids(dataset=dataset)
+        self._init_centroids(dataset)
 
         # Fitting the K-Means
         convergence = False

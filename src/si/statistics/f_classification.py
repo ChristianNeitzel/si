@@ -1,14 +1,11 @@
-import scipy
+
 
 from si.data.dataset import Dataset
+import scipy
+
 
 def f_classification(dataset: Dataset) -> tuple:
-    """
-    Args: 
-        dataset: dataset object
-    Output:
-        tuple with F values + tuple with p values
-    """
+    
     classes = dataset.get_classes()         # Obtain classes from the dataset via the function get_classes() from the "from si.data.dataset import Dataset" import
 
     groups = []                             # List of arrays that will contain our attributes
@@ -18,4 +15,3 @@ def f_classification(dataset: Dataset) -> tuple:
         groups.append(group)
 
     return scipy.stats.f_oneway(*groups)
-
