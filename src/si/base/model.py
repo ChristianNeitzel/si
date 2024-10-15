@@ -78,16 +78,40 @@ class Model(Estimator, ABC):
     @abstractmethod
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
         """
-        
+        Gives a score for the model, given a dataset and its predictions
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to fit and predict the target values of.
+
+        predictions: np.ndarray
+            An array with the predictions 
+
+        Returns
+        -------
+        score: float
+            The score.
         """
 
     def score(self, dataset: Dataset) -> float:
         """
-        Method that verifies whether the model is fitted and if so, it calls the _predict method.
+        Gives a score for the model, given a dataset and its predictions
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to fit and predict the target values of.
+
+        Returns
+        -------
+        score: float
+            The score.
         """
+        
         if self.is_fitted():
             predictions = self.predict(dataset=dataset)
-            self._score(dataset, predictions=predictions)
-
+            return float(self._score(dataset, predictions=predictions))
+        
         else:
             raise ValueError("Your model is not fitted, please call method.fit")

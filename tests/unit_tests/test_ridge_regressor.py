@@ -9,8 +9,8 @@ from si.io.csv_file import read_csv
 from si.model_selection.split import train_test_split
 from si.models.ridge_regression import RidgeRegression
 
+class TestRidgeRegressor(TestCase):
 
-class TestRidgeRegression(TestCase):
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'cpu', 'cpu.csv')
 

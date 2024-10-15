@@ -88,7 +88,8 @@ class KNNClassifier(Model):
 
         # get the most common label
         labels, counts = np.unique(k_nearest_neighbors_labels, return_counts=True)
-        return labels[np.argmax(counts)]
+        label = labels[np.argmax(counts)]
+        return label
 
     def _predict(self, dataset: Dataset) -> np.ndarray:
         """
@@ -104,9 +105,10 @@ class KNNClassifier(Model):
         predictions: np.ndarray
             The predictions of the model
         """
-        return np.apply_along_axis(self._get_closest_label, axis=1, arr=dataset.X)
+        predictions = np.apply_along_axis(self._get_closest_label, axis=1, arr=dataset.X)
+        return predictions
 
-    def score(self, dataset: Dataset) -> float:
+    def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
         """
         It returns the accuracy of the model on the given dataset
 
@@ -114,13 +116,15 @@ class KNNClassifier(Model):
         ----------
         dataset: Dataset
             The dataset to evaluate the model on
+        
+        predictions: np.ndarray
+            An array with the predictions 
 
         Returns
         -------
         accuracy: float
             The accuracy of the model
         """
-        predictions = self.predict(dataset)
         return accuracy(dataset.y, predictions)
 
 

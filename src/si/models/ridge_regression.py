@@ -32,6 +32,21 @@ class RidgeRegression(Model):
     """
     def __init__(self, l2_penalty: float = 1, alpha: float = 0.001, 
                  max_iter: int = 100, patience: int = 5, scale: bool = True, **kwargs):
+        """
+
+        Parameters
+        ----------
+        l2_penalty: float
+            The L2 regularization parameter
+        alpha: float
+            The learning rate
+        max_iter: int
+            The maximum number of iterations
+        patience: int
+            The number of iterations without improvement before stopping the training
+        scale: bool
+            Whether to scale the dataset or not
+        """
         
         # Parameters
         super().__init__(**kwargs)
@@ -64,32 +79,35 @@ class RidgeRegression(Model):
         """
         if self.scale:
             # Compute mean and std
-            self.mean = dataset.get_mean()
+            self.mean = np.nanmean(dataset.X, axis=0)
             self.std = np.nanstd(dataset.X, axis=0)
             # Scale the dataset
             X = (dataset.X - self.mean) / self.std
         else:
             X = dataset.X
 
-        m, n = dataset.shape()      # n = number of columns, m = number of rows
-        self.theta = np.zeros(m)
+        m, n = dataset.shape()
+
+        # Initialize the model parameters
+        self.theta = np.zeros(n)
+        self.theta_zero = 0
 
         i = 0
         early_stopping = 0
         # Gradient descent
         while i < self.max_iter and early_stopping < self.patience:
             # Predicted y
-            y_pred = np.dot(self.theta, dataset.X) + self.theta_zero
+            y_pred = np.dot(X, self.theta) + self.theta_zero
 
             # Computing and updating the gradient with the learning rate
-            gradient = (self.alpha / m) * np.dot((y_pred - dataset.y), X)
+            gradient = (self.alpha / m) * np.dot(y_pred - dataset.y, X)
 
             # Computing the penalty
-            penalization_term = self.theta * [1 - (self.alpha * self.l2_penalty / m)]
+            penalization_term = self.theta * (1 - self.alpha * (self.l2_penalty / m))
 
             # Updating the model parameters
             self.theta = penalization_term - gradient
-            self.theta_zero = self.theta_zero - gradient
+            self.theta_zero = self.theta_zero - (self.alpha * (1 / m)) * np.sum(y_pred - dataset.y)
 
             # Compute the cost
             self.cost_history[i] = self.cost(dataset)
@@ -100,7 +118,7 @@ class RidgeRegression(Model):
                 early_stopping = 0
             i += 1
 
-            return self
+        return self
 
     def _predict(self, dataset: Dataset) -> np.array:
         """
@@ -137,7 +155,6 @@ class RidgeRegression(Model):
             The Mean Square Error of the model
         """
         return mse(dataset.y, predictions)
-
 
     def cost(self, dataset: Dataset) -> float:
         """
