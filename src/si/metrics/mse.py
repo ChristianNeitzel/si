@@ -19,7 +19,7 @@ def mse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
 
     # Calculate the Mean Squared Error (MSE)
-    return np.sum(y_true - y_pred) ** 2 / len(y_true)   # Using numpy's sum() function (np.sum()), we won't have to specify the need to iterate the indexes of y_true or y_pred
+    return np.sum((y_true - y_pred) ** 2) / len(y_true)   # Using numpy's sum() function (np.sum()), we won't have to specify the need to iterate the indexes of y_true or y_pred
 
 def mse_derivative(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     """

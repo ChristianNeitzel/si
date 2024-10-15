@@ -31,7 +31,7 @@ class RidgeRegression(Model):
         For example, theta_zero * 1
     """
     def __init__(self, l2_penalty: float = 1, alpha: float = 0.001, 
-                 max_iter: int = 100, patience: int = 5, scale: bool = True, **kwargs):
+                 max_iter: int = 1000, patience: int = 5, scale: bool = True, **kwargs):
         """
 
         Parameters
@@ -113,7 +113,6 @@ class RidgeRegression(Model):
             self.cost_history[i] = self.cost(dataset)
             if i > 0 and self.cost_history[i] > self.cost_history[i - 1]:
                 early_stopping += 1
-
             else:
                 early_stopping = 0
             i += 1
