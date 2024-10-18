@@ -239,13 +239,13 @@ class Dataset:
         if isinstance(value, float):
             self.X[np.isnan(self.X)] = value                            # Replace NaNs with a specified float value
         
-        # Replace NaNs with them mean of each feature (column)
-        elif value == "mean":
+        # Replace NaNs with the mean of each feature (column)
+        elif value == 'mean':
             col_means = np.nanmean(self.X, axis=0)                      # Compute mean of each column whilst ignoring NaNs
             self.X[nan_indices] = np.take(col_means, nan_indices[1])    # Replace NaNs with the mean of their corresponding columns
         
         # Replace NaNs with the median of each feature (column)
-        elif value == "median":
+        elif value == 'median':
             col_medians = np.nanmedian(self.X, axis=0)                  # Compute median of each column whilst ignoring NaNs
             self.X[nan_indices] = np.take(col_medians, nan_indices[1])  # Replace NaNs with the median of their corresponding columns
 
