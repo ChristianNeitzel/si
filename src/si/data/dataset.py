@@ -51,7 +51,7 @@ class Dataset:
         -------
         bool
         """
-        return self.y is not None
+        return self.y is not None   # Returns boolean of whether or not there is a label (if self.y = None, function will return 'False')
 
     def get_classes(self) -> np.ndarray:
         """
@@ -61,7 +61,7 @@ class Dataset:
         numpy.ndarray (n_classes)
         """
         if self.has_label():
-            return np.unique(self.y)
+            return np.unique(self.y)    # Returns unique values of self.y if there is a label
         else:
             raise ValueError("Dataset does not have a label")
 
@@ -72,7 +72,7 @@ class Dataset:
         -------
         numpy.ndarray (n_features)
         """
-        return np.nanmean(self.X, axis=0)
+        return np.nanmean(self.X, axis=0)   # Returns the mean along the rows of each column (axis=0) whilst ignoring NaN values 
 
     def get_variance(self) -> np.ndarray:
         """
@@ -81,7 +81,7 @@ class Dataset:
         -------
         numpy.ndarray (n_features)
         """
-        return np.nanvar(self.X, axis=0)
+        return np.nanvar(self.X, axis=0)    # Returns the variance along the rows of each column (axis=0) whilst ignoring NaN values 
 
     def get_median(self) -> np.ndarray:
         """
@@ -90,7 +90,7 @@ class Dataset:
         -------
         numpy.ndarray (n_features)
         """
-        return np.nanmedian(self.X, axis=0)
+        return np.nanmedian(self.X, axis=0) # Returns the median along the rows of each column (axis=0) whilst ignoring NaN values 
 
     def get_min(self) -> np.ndarray:
         """
@@ -99,7 +99,7 @@ class Dataset:
         -------
         numpy.ndarray (n_features)
         """
-        return np.nanmin(self.X, axis=0)
+        return np.nanmin(self.X, axis=0)    # Returns the minimum row value of each column (axis=0) whilst ignoring NaN values 
 
     def get_max(self) -> np.ndarray:
         """
@@ -108,11 +108,11 @@ class Dataset:
         -------
         numpy.ndarray (n_features)
         """
-        return np.nanmax(self.X, axis=0)
+        return np.nanmax(self.X, axis=0)    # Returns the maximum row value of each column (axis=0) whilst ignoring NaN values 
 
     def summary(self) -> pd.DataFrame:
         """
-        Returns a summary of the dataset
+        Returns a summary of the dataset and displays them in a Pandas DataFrame format
         Returns
         -------
         pandas.DataFrame (n_features, 5)
