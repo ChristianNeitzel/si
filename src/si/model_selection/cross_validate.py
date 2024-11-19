@@ -4,7 +4,9 @@ import numpy as np
 
 from si.data.dataset import Dataset
 
-def k_fold_cross_validation(model, dataset: Dataset, scoring: callable, cv: int, seed: int = None) -> List[float]:
+
+def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, cv: int = 3,
+                            seed: int = None) -> List[float]:
     """
     Perform k-fold cross-validation on the given model and dataset.
 
@@ -29,12 +31,6 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable, cv: int,
     num_samples = dataset.X.shape[0]
     fold_size = num_samples // cv
     scores = []
-
-    # Create an array of indices to shuffle the data
-    if seed is not None:
-        np.random.seed(seed)
-    indices = np.arange(num_samples)
-    np.random.shuffle(indices)
 
     # Create an array of indices to shuffle the data
     if seed is not None:

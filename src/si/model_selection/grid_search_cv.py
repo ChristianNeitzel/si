@@ -7,10 +7,10 @@ from si.data.dataset import Dataset
 from si.model_selection.cross_validate import k_fold_cross_validation
 
 
-def grid_search_cv(model, 
-                   dataset: Dataset, 
-                   hyperparameter_grid: Dict[str, Tuple], 
-                   scoring: callable = None, 
+def grid_search_cv(model,
+                   dataset: Dataset,
+                   hyperparameter_grid: Dict[str, Tuple],
+                   scoring: Callable = None,
                    cv: int = 5) -> Dict[str, Any]:
     """
     Performs a grid search cross validation on a model.
@@ -48,7 +48,7 @@ def grid_search_cv(model,
         parameters = {}
 
         # Set the parameters
-        for parameter, value in zip(hyperparameter_grid.keys, combination):
+        for parameter, value in zip(hyperparameter_grid.keys(), combination):
             setattr(model, parameter, value)
             parameters[parameter] = value
         
