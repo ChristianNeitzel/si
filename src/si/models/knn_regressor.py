@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Union
 
 import numpy as np
 
@@ -43,7 +43,7 @@ class KNNRegressor(Model):
         self.distance = distance
 
         # attributes
-        self.train_dataset = None
+        self.dataset = None
 
     def _fit(self, dataset: Dataset) -> 'KNNRegressor':
         """
@@ -59,8 +59,30 @@ class KNNRegressor(Model):
         self : KNNRegressor
             The fitted model.
         """
-        self.train_dataset = dataset
+        self.dataset = dataset
         return self
+    
+    def _get_closest_value(self, sample: np.ndarray) -> Union[int, float]:
+        """
+        It returns the closest value of the given sample.
+        (modified version of _get_closest_label() from knn_classifier.py so it obtains the average value of the k nearest neighbors)
+
+        Parameters
+        ----------
+        sample : np.ndarray
+            The sample to get the closest value of.
+
+        Returns
+        -------
+        value : int or float
+            The closest value.
+        """
+        distances = self.distance(sample, self.dataset.X)                   # Compute the distance between the sample and the dataset
+        k_nearest_neighbors = np.argsort(distances)[:self.k]                # Get the k nearest neighbors
+        k_nearest_neighbors_labels = self.dataset.y[k_nearest_neighbors]    # Get the labels of the k nearest neighbors
+        value = np.sum(k_nearest_neighbors_labels) / self.k                 # Get the average value of the k nearest neighbors
+
+        return value
     
     def _predict(self, dataset: Dataset) -> np.ndarray:
         """
@@ -73,23 +95,11 @@ class KNNRegressor(Model):
 
         Returns
         -------
-        np.ndarray
+        predictions : np.ndarray
             The predicted target values.
         """
-        predictions = []
-
-        for sample in dataset.X:
-            # Calculate distances to all training samples
-            distances = self.distance(sample, self.train_dataset.X)
-            
-            # Get indices of the k nearest neighbors
-            k_indices = np.argsort(distances)[:self.k]
-            
-            # Average the target values of the k nearest neighbors
-            k_neighbors = self.train_dataset.y[k_indices]
-            predictions.append(np.mean(k_neighbors))
-        
-        return np.array(predictions)
+        predictions = np.apply_along_axis(self._get_closest_value, axis=1, arr=dataset.X)
+        return predictions
 
 
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
