@@ -17,26 +17,26 @@ class KNNClassifier(Model):
 
     Parameters
     ----------
-    k: int
-        The number of nearest neighbors to use
+    k : int
+        The number of nearest neighbors to use.
     distance: Callable
-        The distance function to use
+        The distance function to use.
 
     Attributes
     ----------
-    dataset: np.ndarray
-        The training data
+    dataset : np.ndarray
+        The training data.
     """
     def __init__(self, k: int = 1, distance: Callable = euclidean_distance, **kwargs):
         """
-        Initialize the KNN classifier
+        Initialize the KNN classifier.
 
         Parameters
         ----------
-        k: int
-            The number of nearest neighbors to use
-        distance: Callable
-            The distance function to use
+        k : int
+            The number of nearest neighbors to use.
+        distance : Callable
+            The distance function to use.
         """
         # parameters
         super().__init__(**kwargs)
@@ -48,34 +48,34 @@ class KNNClassifier(Model):
 
     def _fit(self, dataset: Dataset) -> 'KNNClassifier':
         """
-        It fits the model to the given dataset
+        It fits the model to the given dataset.
 
         Parameters
         ----------
-        dataset: Dataset
-            The dataset to fit the model to
+        dataset : Dataset
+            The dataset to fit the model to.
 
         Returns
         -------
-        self: KNNClassifier
-            The fitted model
+        self : KNNClassifier
+            The fitted model.
         """
         self.dataset = dataset
         return self
 
     def _get_closest_label(self, sample: np.ndarray) -> Union[int, str]:
         """
-        It returns the closest label of the given sample
+        It returns the closest label of the given sample.
 
         Parameters
         ----------
-        sample: np.ndarray
-            The sample to get the closest label of
+        sample : np.ndarray
+            The sample to get the closest label of.
 
         Returns
         -------
-        label: str or int
-            The closest label
+        label : str or int
+            The closest label.
         """
         # compute the distance between the sample and the dataset
         distances = self.distance(sample, self.dataset.X)
@@ -93,37 +93,37 @@ class KNNClassifier(Model):
 
     def _predict(self, dataset: Dataset) -> np.ndarray:
         """
-        It predicts the classes of the given dataset
+        It predicts the classes of the given dataset.
 
         Parameters
         ----------
-        dataset: Dataset
-            The dataset to predict the classes of
+        dataset : Dataset
+            The dataset to predict the classes of.
 
         Returns
         -------
-        predictions: np.ndarray
-            The predictions of the model
+        predictions : np.ndarray
+            The predictions of the model.
         """
         predictions = np.apply_along_axis(self._get_closest_label, axis=1, arr=dataset.X)
         return predictions
 
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
         """
-        It returns the accuracy of the model on the given dataset
+        It returns the accuracy of the model on the given dataset.
 
         Parameters
         ----------
-        dataset: Dataset
-            The dataset to evaluate the model on
+        dataset : Dataset
+            The dataset to evaluate the model on.
         
-        predictions: np.ndarray
-            An array with the predictions 
+        predictions : np.ndarray
+            An array with the predictions.
 
         Returns
         -------
-        accuracy: float
-            The accuracy of the model
+        accuracy : float
+            The accuracy of the model.
         """
         return accuracy(dataset.y, predictions)
 
