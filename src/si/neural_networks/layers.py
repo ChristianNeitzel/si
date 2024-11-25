@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
 import copy
 
 import numpy as np
@@ -97,7 +97,6 @@ class DenseLayer(Layer):
             The number of parameters of the layer.
         """
         return np.prod(self.weights.shape) + np.prod(self.biases.shape)
-
 
     def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
         """
