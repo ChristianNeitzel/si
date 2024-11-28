@@ -36,7 +36,6 @@ class Layer(metaclass=ABCMeta):
     def layer_name(self):
         return self.__class__.__name__ # __class__ obtains the class Layer and __name__ obtains the name, these two combined obtains the name of the class.
 
-
 class DenseLayer(Layer):
     """
     Dense layer of a neural network.
@@ -74,16 +73,13 @@ class DenseLayer(Layer):
         """
         n_features = self.input_shape()[0]
 
-        # Initialize weights randomly between -0.5 and 0.5
-        #self.weights = np.random.uniform(-0.5, 0.5, size=(n_features, self.n_units))
+        # Initialize weights from a 0 centered uniform distribution [-0.5 and 0.5)
         self.weights = np.random.rand(n_features, self.n_unitest) - 0.5
 
         # Initialize biases to 0s
         self.biases = np.zeros((1, self.n_units))
-
-        # Optimizer setup
-        self.optimizer_weights = copy.deepcopy(optimizer)
-        self.optimizer_biases = copy.deepcopy(optimizer)
+        self.w_opt = copy.deepcopy(optimizer)       # Weights
+        self.b_opt = copy.deepcopy(optimizer)       # Biases
         return self
 
 
@@ -119,41 +115,60 @@ class DenseLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, error, learning_rate):
+    def backward_propagation(self, output_error: np.ndarray) -> float:
         """
-        Perform backward propagation through the layer.
+        Perform backward propagation on the given output error.
+        Computes the dE/dW, dE/dB for a given output_error=dE/dY.
+        Returns input_error=dE/dX to feed the previous layer.
 
         Parameters
         ----------
-        error : numpy.ndarray
-            Gradient of the loss with respect to the output of the layer.
-        learning_rate : float
-            Learning rate for the optimizer.
-        
+        output_error: numpy.ndarray
+            The output error of the layer.
+
         Returns
         -------
-        numpy.ndarray
-            Gradient of the loss with respect to the input of the layer.
+        float
+            The input error of the layer.
         """
-        # Calculate gradients
-        weights_gradient = np.dot(self.input.T, error)
-        biases_gradient = np.sum(error, axis=0, keepdims=True)
-        input_error = np.dot(error, self.weights.T)
 
-        # Update parameters using the optimizer
-        self.weights -= learning_rate * weights_gradient
-        self.biases -= learning_rate * biases_gradient
+
+        # Computes the layer input error (the output error from the previous layer),
+        # dE/dX, to pass on to the previous layer
+        # SHAPES: (batch_size, input_columns) = (batch_size, output_columns) * (output_columns, input_columns)
+        # output_error.shape    = ( batch_size      ,   output_neurons  )
+        # self.weights.shape    = ( input_neurons   ,   output_neurons  )
+        input_error = np.dot(output_error, self.weights.T)  # output_error * self.weights.T (calculated using np.dot)
+
+
+        # Computes the weight error: dE/dW = X.T * dE/dY
+        # SHAPES: (input_columns, output_columns) = (input_columns, batch_size) * (batch_size, output_columns)
+        # self.input.shape      = ( batch_size  , input_neurons    )
+        # output_error.shape    = ( batch_size  , output_neurons   )
+        weights_error = np.dot(self.input.T, output_error)  # self.input.T * output_error (calculated using np.dot)
+
+        # Computes the bias error: dE/dB = dE/dY
+        # SHAPES: (1, output_columns) = SUM over the rows of a matrix of shape (batch_size, output_columns)
+        # axis=0 -> sum all errors (vertical) for each iteration.
+        bias_error = np.sum(output_error, axis=0, keepdims=True)
+
+        # Updates parameters
+        self.weights = self.w_opt.update(weights_error)
+        self.biases = self.b_opt.update(bias_error)
 
         return input_error
 
 
     def output_shape(self):
         """
-        Return the shape of the layer's output.
+        Returns the shape of the output of the layer.
 
         Returns
         -------
         tuple
-            Shape of the output (n_units, ).
+            The shape of the output of the layer.
         """
         return (self.n_units, )
+    
+
+
