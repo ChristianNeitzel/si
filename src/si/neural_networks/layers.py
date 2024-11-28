@@ -136,20 +136,14 @@ class DenseLayer(Layer):
         # Computes the layer input error (the output error from the previous layer),
         # dE/dX, to pass on to the previous layer
         # SHAPES: (batch_size, input_columns) = (batch_size, output_columns) * (output_columns, input_columns)
-        # output_error.shape    = ( batch_size      ,   output_neurons  )
-        # self.weights.shape    = ( input_neurons   ,   output_neurons  )
         input_error = np.dot(output_error, self.weights.T)  # output_error * self.weights.T (calculated using np.dot)
-
 
         # Computes the weight error: dE/dW = X.T * dE/dY
         # SHAPES: (input_columns, output_columns) = (input_columns, batch_size) * (batch_size, output_columns)
-        # self.input.shape      = ( batch_size  , input_neurons    )
-        # output_error.shape    = ( batch_size  , output_neurons   )
         weights_error = np.dot(self.input.T, output_error)  # self.input.T * output_error (calculated using np.dot)
 
         # Computes the bias error: dE/dB = dE/dY
         # SHAPES: (1, output_columns) = SUM over the rows of a matrix of shape (batch_size, output_columns)
-        # axis=0 -> sum all errors (vertical) for each iteration.
         bias_error = np.sum(output_error, axis=0, keepdims=True)
 
         # Updates parameters
