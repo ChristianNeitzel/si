@@ -198,9 +198,9 @@ class Dataset:
         y = np.random.randint(0, n_classes, n_samples)
         return cls(X, y, features=features, label=label)
     
+    # Evaluation Exercise 2.1 - Implemention of method: dropna()
     def dropna(self):
         """
-        Exercise 2.1 - dropna() implementation
         Removes all rows in the dataset that contain at least one NaN value.
 
         Returns
@@ -217,14 +217,14 @@ class Dataset:
 
         return self
     
+    # Exaluation Exercise 2.2 - Implementation of method: fillna()
     def fillna(self, value: Union[float, str] = 'mean'):
         """
-        Exercise 2.2 - fillna() implementation
-        Replaces all NaN values in the dataset with a specific value, or the mean or median of the respective feature.
+        Fills all NaN values in the dataset with a specific value, or the mean or median of the respective feature.
         
         Parameters
         ----------
-        value: float or str
+        value: Union[float, str]
             If a float -> replaces NaNs with the given float value.
             If value='mean' -> replaces NaNs with the mean of the respective feature. (default setting)
             If value='median' -> replaces NaNs with the median of the respective feature.
@@ -234,30 +234,25 @@ class Dataset:
         self : Dataset
             The modified Dataset object with NaN values replaced.
         """
-        nan_indices = np.where(np.isnan(self.X))                        # Find the indices of each NaN value
-        
-        if isinstance(value, float):
-            self.X[np.isnan(self.X)] = value                            # Replace NaNs with a specified float value
-        
-        # Replace NaNs with the mean of each feature (column)
-        elif value == 'mean':
-            col_means = np.nanmean(self.X, axis=0)                      # Compute mean of each column whilst ignoring NaNs
-            self.X[nan_indices] = np.take(col_means, nan_indices[1])    # Replace NaNs with the mean of their corresponding columns
-        
-        # Replace NaNs with the median of each feature (column)
-        elif value == 'median':
-            col_medians = np.nanmedian(self.X, axis=0)                  # Compute median of each column whilst ignoring NaNs
-            self.X[nan_indices] = np.take(col_medians, nan_indices[1])  # Replace NaNs with the median of their corresponding columns
 
+        if isinstance(value, str):
+            if value == 'mean':
+                fill_values = np.nanmean(self.X, axis=0)    # Prepares condition to perform the mean of the non-NaN elements of each column.
+            elif value == 'median':
+                fill_values = np.nanmedian(self.X, axis=0)  # Prepares condition to perform the median of the non-NaN elements of each column.
+            else:
+                raise ValueError("Invalid value for 'fillna'. Value must be 'mean', 'median' or a float")
         else:
-            raise ValueError("Invalid value for 'fillna'. Use a float or define 'mean' or 'median' for the value parameter.")
+            fill_values = np.full(self.X.shape[1], value)   # Prepares condition to replace NaN values with the defined float value.
 
+        # Replace NaN values with the corresponding fill value
+        indices = np.where(np.isnan(self.X))                # Get indices of NaN values
+        self.X[indices] = np.take(fill_values, indices[1])  # Replace NaNs with the corresponding fill values
         return self
     
-
+    # Evaluation Exercise 2.3 - Implementation of method: remove_by_index()
     def remove_by_index(self, index: int):
         """
-        Exercise 2.3 - remove_by_index() implementation
         Removes the sample (row) at the given index from both the feature matrix X and the label vector y.
     
         Parameters
