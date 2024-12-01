@@ -217,7 +217,7 @@ class Dataset:
 
         return self
     
-    # Exaluation Exercise 2.2 - Implementation of method: fillna()
+    # Evaluation Exercise 2.2 - Implementation of method: fillna()
     def fillna(self, value: Union[float, str] = 'mean'):
         """
         Fills all NaN values in the dataset with a specific value, or the mean or median of the respective feature.
