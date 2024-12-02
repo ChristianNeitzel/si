@@ -21,8 +21,10 @@ class LassoRegression(Model):
         patience : int
             The number of consecutive iterations allowed without significant improvement before stopping the optimization early.
         tolerance : float
-            The convergence tolerance for the optimization. 
-
+            The convergence tolerance for the optimization (early stopping condition).
+            Helps save computational resources by avoiding unnecessary iterations after reaching an acceptable solution.
+            Setting the tolerance to 0 disables it.
+            
         Attributes
         ----------
         theta : np.ndarray
@@ -129,7 +131,9 @@ class LassoRegression(Model):
         else:
             X = dataset.X
 
-        return X.dot(self.theta) + self.theta_zero  # Predictions
+        predictions = X.dot(self.theta) + self.theta_zero
+
+        return predictions
 
 
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
