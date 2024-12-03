@@ -10,25 +10,20 @@ class Layer(metaclass=ABCMeta):
     def forward_propagation(self, input):
         raise NotImplementedError
 
-
     @abstractmethod
     def backward_propagation(self, error):
         raise NotImplementedError
-
 
     @abstractmethod
     def output_shape(self):
         raise NotImplementedError
 
-
     @abstractmethod
     def parameters(self):
         raise NotImplementedError
 
-
     def set_input_shape(self, input_shape):
         self._input_shape = input_shape
-
 
     def input_shape(self):
         return self._input_shape
@@ -47,9 +42,9 @@ class DenseLayer(Layer):
 
         Parameters
         ----------
-        n_units : int
-            The number of units of the layer, AKA the number of neurons, AKA the dimensionality of the output space.
-        input_shape : tuple
+        n_units: int
+            The number of units of the layer, aka the number of neurons, aka the dimensionality of the output space.
+        input_shape: tuple
             The shape of the input to the layer.
         """
         super().__init__()
@@ -60,7 +55,6 @@ class DenseLayer(Layer):
         self.output = None
         self.weights = None
         self.biases = None
-
 
     def initialize(self, optimizer: Optimizer) -> 'DenseLayer':
         """
@@ -81,7 +75,6 @@ class DenseLayer(Layer):
         self.w_opt = copy.deepcopy(optimizer)       # Weights
         self.b_opt = copy.deepcopy(optimizer)       # Biases
         return self
-
 
     def parameters(self) -> int:
         """
@@ -114,7 +107,6 @@ class DenseLayer(Layer):
         self.output = np.dot(self.input, self.weights) + self.biases
         return self.output
 
-
     def backward_propagation(self, output_error: np.ndarray) -> float:
         """
         Perform backward propagation on the given output error.
@@ -131,8 +123,6 @@ class DenseLayer(Layer):
         float
             The input error of the layer.
         """
-
-
         # Computes the layer input error (the output error from the previous layer),
         # dE/dX, to pass on to the previous layer
         # SHAPES: (batch_size, input_columns) = (batch_size, output_columns) * (output_columns, input_columns)
@@ -147,13 +137,11 @@ class DenseLayer(Layer):
         bias_error = np.sum(output_error, axis=0, keepdims=True)
 
         # Updates parameters
-        self.weights = self.w_opt.update(weights_error)
-        self.biases = self.b_opt.update(bias_error)
-
+        self.weights = self.w_opt.update(self.weights, weights_error)
+        self.biases = self.b_opt.update(self.biases, bias_error)
         return input_error
-
-
-    def output_shape(self):
+    
+    def output_shape(self) -> tuple:
         """
         Returns the shape of the output of the layer.
 
@@ -162,7 +150,4 @@ class DenseLayer(Layer):
         tuple
             The shape of the output of the layer.
         """
-        return (self.n_units, )
-    
-
-
+        return (self.n_units,) 
