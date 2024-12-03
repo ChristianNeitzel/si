@@ -3,8 +3,7 @@ from datasets import DATASETS_PATH
 
 import os
 from si.io.csv_file import read_csv
-from si.model_selection.split import train_test_split
-from si.model_selection.split import stratified_train_test_split
+from si.model_selection.split import train_test_split, stratified_train_test_split
 
 class TestSplits(TestCase):
 
@@ -27,7 +26,7 @@ class TestSplits(TestCase):
 
         # Check that the number of samples is correct
         total_samples = self.dataset.shape()[0]
-        test_samples_size = int(total_samples * 0.2)
+        test_samples_size = int(total_samples * 0.2)            # total_samples * test_size
         train_samples_size = total_samples - test_samples_size
 
         self.assertEqual(test.shape()[0], test_samples_size)
@@ -49,7 +48,7 @@ class TestSplits(TestCase):
             test_class_count = len([y for y in test.y if y == class_label])
 
             # Calculate the expected number of test samples
-            expected_test_count = int(original_class_count * 0.2)
+            expected_test_count = int(original_class_count * 0.2)               # original_class_count * test_size
             expected_train_count = original_class_count - expected_test_count
 
             # Validate the counts

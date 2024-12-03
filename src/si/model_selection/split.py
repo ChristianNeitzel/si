@@ -66,8 +66,8 @@ def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random
     -------
     Tuple[Dataset, Dataset]
         A tuple containing the stratified training and testing datasets.
-    """    
-    
+    """  
+      
     # Set random state
     np.random.seed(random_state)
 
