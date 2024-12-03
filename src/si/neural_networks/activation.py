@@ -1,6 +1,8 @@
 from abc import abstractmethod
 from typing import Union
+
 import numpy as np
+
 from si.neural_networks.layers import Layer
 
 
@@ -8,11 +10,6 @@ class ActivationLayer(Layer):
     """
     Base class for activation layers.
     """
-    # def activation_function(self, input: np.ndarray, training: bool) -> np.ndarray:
-    #     self.input = input
-    #     self.output = self.activation_function(self.input)
-    #     return self.output
-    
     def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
         """
         Perform forward propagation on the given input.
@@ -125,7 +122,7 @@ class SigmoidActivation(ActivationLayer):
         """
         return 1 / (1 + np.exp(-input))
 
-    def derivative(self) -> int:
+    def derivative(self, input: np.ndarray):
         """
         Derivative of the sigmoid activation function.
 
@@ -141,7 +138,7 @@ class SigmoidActivation(ActivationLayer):
         """
         return self.activation_function(input) * (1 - self.activation_function(input))
     
-
+    
 class ReLUActivation(ActivationLayer):
     """
     ReLU activation function.
@@ -176,4 +173,4 @@ class ReLUActivation(ActivationLayer):
         numpy.ndarray
             The derivative of the activation function.
         """
-        return np.where(input >= 0, 1, 0)        
+        return np.where(input >= 0, 1, 0)
