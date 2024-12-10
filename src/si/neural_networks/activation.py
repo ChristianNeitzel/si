@@ -174,3 +174,90 @@ class ReLUActivation(ActivationLayer):
             The derivative of the activation function.
         """
         return np.where(input >= 0, 1, 0)
+
+
+# Evaluation Exercise 13.1: TanhActivation class implementation.
+class TanhActivation(ActivationLayer):
+    """
+    Tanh activation function.
+    """
+    def activation_function(self, input: np.ndarray) -> np.ndarray:
+        """
+        Tanh activation function.
+
+        Parameters
+        ----------
+        input : np.ndarray
+            The input to the layer.
+
+        Returns
+        -------
+        np.ndarray
+            The output of the tanh activation function.
+        """
+        # np.cosh(input) = 1/2 * (np.exp(input) + np.exp(-input))
+        # np.sinh(input) = 1/2 * (np.exp(input) - np.exp(-input))
+
+        # np.tanh(input) = np.sinh(input) / np.cosh(input)
+        # np.tanh(input) = (np.exp(input) - np.exp(-input)) / (np.exp(input) + np.exp(-input))
+        return np.tanh(input)
+    
+    def derivative(self, input: np.ndarray) -> np.ndarray:
+        """
+        Derivative of the tanh activation function.
+
+        Parameters
+        ----------
+        input : np.ndarray
+            The input to the layer.
+
+        Returns
+        -------
+        np.ndarray
+            The derivative of the tanh activation function.
+        """
+        # Note: x -> input; f(x) -> self.activation_function(input)
+
+        # return 1 - (self.activation_function(input) ** 2) # Should correspond to: 1 - np.tanh(input) ** 2
+        return 1 - np.tanh(input) ** 2
+
+
+# Evaluation Exercise 13.2: SoftmaxActivation class implementation.
+class SoftmaxActivation(ActivationLayer):
+    """
+    Softmax activation function.
+    """
+    def activation_function(self, input: np.ndarray) -> np.ndarray:
+        """
+        Softmax activation function.
+
+        Parameters
+        ----------
+        input : np.ndarray
+            The input to the layer.
+
+        Returns
+        -------
+        np.ndarray
+            The output probability for each class.
+        """
+        # Numerical stability fix to prevent large exponents
+        exp_values = np.exp(input - np.max(input, axis=1, keepdims=True))
+        return exp_values / np.sum(exp_values, axis=1, keepdims=True)
+
+    def derivative(self, input: np.ndarray) -> np.ndarray:
+        """
+        Derivative of the softmax activation function.
+
+        Parameters
+        ----------
+        input : np.ndarray
+            The input to the layer.
+
+        Returns
+        -------
+        np.ndarray
+            The derivative of the activation function.
+        """
+        # Note: x -> input; f(x) -> self.activation_function(input)
+        return self.activation_function(input) * (1 - self.activation_function(input))
