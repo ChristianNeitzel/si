@@ -49,7 +49,7 @@ class SGD(Optimizer):
         self.momentum = momentum
 
         # Parameters
-        self.retained_gradient = None # Estimated parameters are set to None in the constructor, as they will be obtained later.
+        self.retained_gradient = None   # Estimated parameters are set to None in the constructor, as they will be obtained later.
 
     def update(self, w: np.ndarray, grad_loss_w: np.ndarray) -> np.ndarray:
         """
@@ -68,7 +68,7 @@ class SGD(Optimizer):
             The updated weights of the layer.
         """
         # Verify if retained_gradient is initialized
-        if self.retained_gradient == None:              # If retained_gradient was not initialized:
+        if self.retained_gradient == None:                  # If retained_gradient was not initialized:
             self.retained_gradient = np.zeros(np.shape(w))  # Initialize retained_gradient as a matrix of zeroes
 
         # If retained_gradient was initialized:
