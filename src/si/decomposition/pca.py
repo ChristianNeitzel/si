@@ -1,14 +1,15 @@
-# Evaluation Exercise 5: Implementation of the PCA Class
-
 import numpy as np
 from si.base.transformer import Transformer
 from si.data.dataset import Dataset
 
-
+# Evaluation Exercise 5: Implementation of the PCA class.
 class PCA(Transformer):
+    """
+    Principal Component Analysis (PCA).
+    """
     def __init__(self, n_components, **kwargs):
         """
-        Initializes the PCA class with the desired number of components.
+        Initializes the PCA with the desired number of components.
 
         Parameters
         ----------
@@ -22,11 +23,6 @@ class PCA(Transformer):
         self.mean = None
         self.components = None
         self.explained_variance = None
-
-        self.covariance = None
-        self.eigenvalues = None
-        self.eigenvectors = None
-
 
     def _fit(self, dataset: Dataset) -> 'PCA':
         """
@@ -48,7 +44,6 @@ class PCA(Transformer):
             If n_components is not an integer.
             If n_components is not a positive value greater than 0 with less or greater than the number of features.
         """
-
         # Check for valid n_components: must be an integer
         if not isinstance(self.n_components, int):
             raise ValueError(
@@ -63,24 +58,21 @@ class PCA(Transformer):
             )
 
         # Step 1: Center the data
-        self.mean = dataset.get_mean()          # Infering the mean of the samples
-        dataset.X = dataset.X - self.mean       # Subtracting the mean from the dataset
+        self.mean = dataset.get_mean()      # Infering the mean of the samples
+        X_centered = dataset.X - self.mean   # Subtracting the mean from the dataset
 
         # Step 2: Calculate the covariance matrix and perform eigenvalue decomposition
-        self.covariance = np.cov(dataset.X, rowvar=False)                       # Calculate covariance matrix of the centered data
-        self.eigenvalues, self.eigenvectors = np.linalg.eig(self.covariance)    # Eigenvalue decomposition on the covariance matrix
-
-
-        self.eigenvalues = np.real(self.eigenvalues)
+        self.covariance = np.cov(X_centered, rowvar=False)                      # Calculate covariance matrix of the centered data
+        self.eigenvalues, self.eigenvectors = np.linalg.eigh(self.covariance)   # Eigenvalue decomposition on the covariance matrix
 
         # Step 3: Infer the Principal Components
-        sorted_idx = np.argsort(self.eigenvalues)[-self.n_components:][::-1]  # Preparing index sorting of principal components by descending order
+        sorted_idx = np.argsort(self.eigenvalues)[-self.n_components:][::-1] 
 
         # Step 4: Infer the Explained Variance (EV)
         # EV of one component is calculated by dividing the eigenvalue of that component with the sum of all eigenvalues
         # explained_variance corresponds to the first n_components of EV
-        self.explained_variance = self.eigenvalues[sorted_idx] / np.sum(self.eigenvalues) 
         self.components = self.eigenvectors[:, sorted_idx].T
+        self.explained_variance = self.eigenvalues[sorted_idx] / np.sum(self.eigenvalues)
 
         self.is_fitted = True
 
@@ -97,21 +89,21 @@ class PCA(Transformer):
 
         Returns
         -------
-        X_reduced : np.ndarray
+        Dataset
             The transformed data matrix of shape (n_samples, n_features) in the reduced dimension space.
 
         Raises
         ------
         ValueError
-            If PCA has not been fitted.
+            If PCA has not been fitted. Ensure to call the 'fit' method before using 'transform'.
         """
-        if self.mean is None or self.components is None:
+        if not self.is_fitted:
             raise ValueError("PCA has not been fitted yet.")
 
         # Center the data by subtracting the mean
-        dataset.X = dataset.X - self.mean
+        X_centered = dataset.X - self.mean
 
         # Calculate the reduced data by projecting onto the principal components
-        X_reduced = np.dot(dataset.X, self.components.T)
+        X_reduced = np.dot(X_centered, self.components.T)
 
         return Dataset(X_reduced, y=dataset.y, features=[f"PC{i+1}" for i in range(self.n_components)], label=dataset.label)

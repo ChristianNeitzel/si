@@ -1,36 +1,40 @@
-# Evaluation Exercise 4: Implement the Cosine distance function.
-
 import numpy as np
 
+# Evaluation Exercise 4: Implement the Cosine distance function.
 def cosine_distance(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     """
-    Calculates the Cosine Distance between a single sample x and multiple samples y.
+    Calculate the cosine distance between a single sample 'x' and multiple samples 'y'.
 
-    Measures the dissimilarity between vectors by calculating the cosine of the angle between them.
-        Cosine distance of 0 -> vectors are perfectly aligned (maximum similarity)
-        Cosine distance closer to 2 -> vectors are diametrically opposite (maximum dissimilarity)
+    Similarity ranges from 0 to 1:
+        similarity = 0 -> vectors are unrelated;
+        similarity = 1 -> vectors are identical (maximum similarity).
 
-    Parameters:
-        x (array): A 1D array representing a single sample.
-        y (array): A 2D array where each row is a sample.
+    Distance (output) ranges from 0 to 2:
+        distance = 0 -> vectors are identical (maximum similarity);
+        distance = 1 -> vectors are unrelated;
+        distance = 2 -> vectors are diametrically opposite (maximum dissimilarity).
 
-    Returns:
-        distances (array): An array of Cosine Distances between x and each row in y.
+    Note: distance = 1 - similarity
+
+    Parameters
+    ----------
+    x : numpy.ndarray
+        A 1D array representing a single sample (n_features,).
+    y : numpy.ndarray
+        A 2D array where each row is a sample (n_samples, n_features).
+
+    Returns
+    -------
+    numpy.ndarray
+        An array of cosine distances between 'x' and each sample in 'y'.
     """
+    # Prepare variables for the similarity formula
+    dot_product = np.dot(y, x)          # Calculate dot product between y and x
+    norm_x = np.linalg.norm(x)          # Obtain norm of x (||x||)
+    norm_y = np.linalg.norm(y, axis=1)  # Obtain norm of y (||y||)
 
-    # Initialize an array to store distances
-    distances = np.zeros(y.shape[0])
+    # Compute similarity
+    similarity = dot_product / (norm_x * norm_y)
 
-    x_norm = np.sqrt(np.sum(x ** 2))            # Calculate the norm of x (||x||)
-
-    for i in range(y.shape[0]):
-        dot_product = np.dot(x, y[i])           # Calculate the dot product bwettn x and the i-th sample in y
-        y_norm = np.sqrt(np.sum(y[i] ** 2))     # Calculate the norm of y[i] (||y[i]||)
-
-        # Calculare cosine similarity
-        similarity = dot_product / (x_norm * y_norm)
-
-        # Calculate cosine distance
-        distances[i] = 1 - similarity
-
-    return distances
+    # Calculate and output cosine distance
+    return 1 - similarity
