@@ -37,7 +37,6 @@ class DenseLayer(Layer):
     """
     Dense layer of a neural network.
     """
-
     def __init__(self, n_units: int, input_shape: tuple = None):
         """
         Initialize the dense layer.
@@ -70,7 +69,7 @@ class DenseLayer(Layer):
         n_features = self.input_shape()[0]
 
         # Initialize weights from a 0 centered uniform distribution [-0.5 and 0.5)
-        self.weights = np.random.rand(n_features, self.n_unitest) - 0.5
+        self.weights = np.random.rand(n_features, self.n_units) - 0.5
 
         # Initialize biases to 0s
         self.biases = np.zeros((1, self.n_units))
