@@ -137,9 +137,12 @@ class BinaryCrossEntropy(LossFunction):
 
 # Evaluation Exercise 14: CategoricalCrossEntropy class implementation
 class CategoricalCrossEntropy(LossFunction):
-    def loss(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """
+    Categorical Cross-Entropy loss function.
+    """
+    def loss(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
         """
-        Computes the categorical cross-entropy loss.
+        Compute the categorical cross-entropy loss.
 
         Parameters
         ----------
@@ -153,15 +156,13 @@ class CategoricalCrossEntropy(LossFunction):
         float
             The categorical cross-entropy loss.
         """
-        # Clip predictions to avoid log(0) and numerical instability
-        epsilon = 1e-12
-        y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
+        # Clip predictions to prevent log(0)
+        y_pred = np.clip(y_pred, 1e-15, 1 - 1e-15)
+        return -np.sum(y_true * np.log(y_pred)) / y_true.shape[0]
 
-        return -np.sum(y_true * np.log(y_pred)) / y_true.shape[0]   # Compute and output the categorical cross-entropy
-
-    def derivative(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
+    def derivative(self, y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
         """
-        Computes the derivative of the categorical cross-entropy loss.
+        Compute the derivative of the categorical cross-entropy loss.
 
         Parameters
         ----------
@@ -175,8 +176,6 @@ class CategoricalCrossEntropy(LossFunction):
         numpy.ndarray
             The gradient of the loss with respect to the predictions.
         """
-        # Clip predictions to avoid division by zero and numerical instability
-        epsilon = 1e-12
-        y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
-        
-        return -(y_true / y_pred)
+        # Clip predictions to prevent division by 0
+        y_pred = np.clip(y_pred, 1e-15, 1 - 1e-15)
+        return -y_true / y_pred

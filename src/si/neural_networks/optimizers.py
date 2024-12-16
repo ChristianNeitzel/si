@@ -68,7 +68,7 @@ class SGD(Optimizer):
             The updated weights of the layer.
         """
         # Verify if retained_gradient is initialized
-        if self.retained_gradient == None:                  # If retained_gradient was not initialized:
+        if self.retained_gradient is None:                  # If retained_gradient was not initialized:
             self.retained_gradient = np.zeros(np.shape(w))  # Initialize retained_gradient as a matrix of zeroes
 
         # If retained_gradient was initialized:

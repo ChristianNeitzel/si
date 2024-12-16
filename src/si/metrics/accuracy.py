@@ -24,7 +24,7 @@ def accuracy(y_true: np.ndarray, y_pred: np.ndarray) -> float:
             corrected_y = [np.round(y[i][0]) for i in range(len(y))]
         else:
             corrected_y = [np.argmax(y[i]) for i in range(len(y))]
-        return np.ndarray(corrected_y)
+        return np.array(corrected_y)
     
     if isinstance(y_true[0], list) or isinstance(y_true[0], np.ndarray):
         y_true = correct_format(y_true)
@@ -32,4 +32,4 @@ def accuracy(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     if isinstance(y_pred[0], list) or isinstance(y_pred[0], np.ndarray):
         y_pred = correct_format(y_pred)
 
-    return np.sum(y_true == y_pred) / len(y_true)   # y_true.shape[0] instead of len(y_true) also works!
+    return np.sum(y_pred == y_true) / len(y_true)   # y_true.shape[0] instead of len(y_true) also works!
