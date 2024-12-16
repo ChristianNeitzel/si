@@ -48,7 +48,7 @@ class MeanSquaredError(LossFunction):
     """
     Mean squared error loss function.
     """
-    def loss(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    def loss(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
         """
         Compute the mean squared error loss function.
 
