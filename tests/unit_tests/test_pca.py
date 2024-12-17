@@ -25,9 +25,7 @@ class TestPCA(TestCase):
         reduced_dataset = pca.transform(self.dataset)
 
         self.assertEqual(reduced_dataset.X.shape, (self.dataset.shape()[0], n_components))
-
         self.assertEqual(reduced_dataset.features, [f"PC{i+1}" for i in range(n_components)])
-
 
 
 # Testing if ValueError raise works.

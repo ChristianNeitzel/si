@@ -14,7 +14,6 @@ class NeuralNetwork(Model):
     """
     It represents a neural network model that is made by a sequence of layers.
     """
-
     def __init__(self, epochs: int = 100, batch_size: int = 128, optimizer: Optimizer = SGD,
                  learning_rate: float = 0.01, verbose: bool = False, loss: LossFunction = MeanSquaredError,
                  metric: callable = mse, **kwargs):
@@ -40,7 +39,7 @@ class NeuralNetwork(Model):
         **kwargs
             Additional keyword arguments passed to the optimizer.
         """
-        # arguments
+        # Arguments
         self.epochs = epochs
         self.batch_size = batch_size
         self.optimizer = optimizer(learning_rate=learning_rate, **kwargs)
@@ -48,17 +47,17 @@ class NeuralNetwork(Model):
         self.loss = loss()
         self.metric = metric
 
-        # attributes
+        # Attributes
         self.layers = []
         self.history = {}
 
-    def add(self, layer: Layer) -> 'NeuralNetwork':
+    def add(self, layer: Layer) -> 'NeuralNetwork': 
         """
         Add a layer to the neural network.
-
+        
         Parameters
         ----------
-        layer: Layer
+        layer : Layer
             The layer to add.
 
         Returns
@@ -66,25 +65,29 @@ class NeuralNetwork(Model):
         NeuralNetwork
             The neural network with the added layer.
         """
+        # Set the input shape of the layer
         if self.layers:
             layer.set_input_shape(input_shape=self.layers[-1].output_shape())
+
+        # Initialize the layer with the optimizer (If needed)
         if hasattr(layer, 'initialize'):
             layer.initialize(self.optimizer)
+
+        # Append the layer to self.layers
         self.layers.append(layer)
         return self
 
-    def _get_mini_batches(self, X: np.ndarray, y: np.ndarray = None,
-                          shuffle: bool = True) -> Iterator[Tuple[np.ndarray, np.ndarray]]:
+    def _get_mini_batches(self, X: np.ndarray, y: np.ndarray = None, shuffle: bool = True) -> Iterator[Tuple[np.ndarray, np.ndarray]]:
         """
         Generate mini-batches for the given data.
 
         Parameters
         ----------
-        X: numpy.ndarray
+        X : numpy.ndarray
             The feature matrix.
-        y: numpy.ndarray
+        y : numpy.ndarray
             The label vector.
-        shuffle: bool
+        shuffle : bool
             Whether to shuffle the data or not.
 
         Returns
@@ -144,6 +147,18 @@ class NeuralNetwork(Model):
         return error
 
     def _fit(self, dataset: Dataset) -> 'NeuralNetwork':
+        """
+        Fit the Dataset for the neural network.
+        
+        Parameters
+        ----------
+        dataset : Dataset
+            The dataset to be fitted.
+        Returns
+        -------
+        NeuralNetwork
+            The neural network with the fitted dataset.
+        """
         X = dataset.X
         y = dataset.y
         if np.ndim(y) == 1:
@@ -151,13 +166,15 @@ class NeuralNetwork(Model):
 
         self.history = {}
         for epoch in range(1, self.epochs + 1):
-            # store mini-batch data for epoch loss and quality metrics calculation
+            # Store mini-batch data for epoch loss and quality metrics calculation
             output_x_ = []
             y_ = []
             for X_batch, y_batch in self._get_mini_batches(X, y):
-                # Forward propagation
+
+                # Perform forward propagation for all layers
                 output = self._forward_propagation(X_batch, training=True)
-                # Backward propagation
+                
+                # Perform backward propagation
                 error = self.loss.derivative(y_batch, output)
                 self._backward_propagation(error)
 
@@ -167,7 +184,7 @@ class NeuralNetwork(Model):
             output_x_all = np.concatenate(output_x_)
             y_all = np.concatenate(y_)
 
-            # compute loss
+            # Compute the loss based on true labels and predictions
             loss = self.loss.loss(y_all, output_x_all)
 
             if self.metric is not None:
@@ -177,9 +194,10 @@ class NeuralNetwork(Model):
                 metric_s = "NA"
                 metric = 'NA'
 
-            # save loss and metric for each epoch
+            # Save the loss and metric in the history dictionary
             self.history[epoch] = {'loss': loss, 'metric': metric}
 
+            # Print the metric and loss if verbose is set to True
             if self.verbose:
                 print(f"Epoch {epoch}/{self.epochs} - loss: {loss:.4f} - {metric_s}")
 
@@ -188,12 +206,12 @@ class NeuralNetwork(Model):
     def _predict(self, dataset: Dataset) -> np.ndarray:
         """
         Predict the labels for the given dataset.
-
+        
         Parameters
         ----------
-        dataset: Dataset
+        dataset : Dataset
             The dataset to predict.
-
+        
         Returns
         -------
         numpy.ndarray
@@ -207,10 +225,10 @@ class NeuralNetwork(Model):
 
         Parameters
         ----------
-        dataset: Dataset
+        dataset : Dataset
             The dataset to score.
-        predictions: np.ndarray
-            Predictions
+        predictions : numpy.ndarray
+            Predictions.
 
         Returns
         -------
@@ -220,7 +238,7 @@ class NeuralNetwork(Model):
         if self.metric is not None:
             return self.metric(dataset.y, predictions)
         else:
-            raise ValueError("No metric specified for the neural network.")
+            raise ValueError("No metric function specified for the neural network.")
 
 
 if __name__ == '__main__':
@@ -233,7 +251,7 @@ if __name__ == '__main__':
     from si.io.csv_file import read_csv
 
     # training data
-    dataset = read_csv('../../../datasets/iris/iris.csv', sep=',', features=True, label=True)
+    dataset = read_csv('../../datasets/iris/iris.csv', sep=',', features=True, label=True)
     # convert labels to one-hot encoding
     new_y = np.zeros((dataset.y.shape[0], 3))
     for i, label in enumerate(dataset.y):
@@ -267,3 +285,9 @@ if __name__ == '__main__':
     print(out2[:3])
 
     print(net.score(dataset))
+
+    # epoch -> number of times the model is fully trained on the dataset.
+    # batch_size -> number of examples per batch
+    # optimizer -> update weights
+    # learning_rate -> controls how quickly an algorithm updates its parameter estimates
+    # verbone -> whether to print the loss and the metric at each epoch

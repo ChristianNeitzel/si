@@ -58,8 +58,8 @@ class PCA(Transformer):
             )
 
         # Step 1: Center the data
-        self.mean = dataset.get_mean()      # Infering the mean of the samples
-        X_centered = dataset.X - self.mean   # Subtracting the mean from the dataset
+        self.mean = dataset.get_mean()          # Infering the mean of the samples
+        X_centered = dataset.X - self.mean      # Subtracting the mean from the dataset
 
         # Step 2: Calculate the covariance matrix and perform eigenvalue decomposition
         self.covariance = np.cov(X_centered, rowvar=False)                      # Calculate covariance matrix of the centered data
@@ -100,7 +100,7 @@ class PCA(Transformer):
         if not self.is_fitted:
             raise ValueError("PCA has not been fitted yet.")
 
-        # Center the data by subtracting the mean
+        # Center the data
         X_centered = dataset.X - self.mean
 
         # Calculate the reduced data by projecting onto the principal components

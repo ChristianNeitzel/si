@@ -51,15 +51,16 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
 # Evaluation Exercise 6.1: Implementing stratified splitting.
 def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int = 42) -> Tuple[Dataset, Dataset]:
     """
-    Stratified split of the dataset into training and testing sets, maintaining the proportion of each class in both sets.
+    Stratified split of the dataset into training and testing sets. 
+    Preserves class proportions between train and test sets after dataset splitting.
 
     Parameters
     ----------
-    dataset: Dataset
+    dataset : Dataset
         The dataset to split.
-    test_size: float
+    test_size : float
         The proportion of the dataset to include in the test split.
-    random_state: int
+    random_state : int
         The seed of the random number generator.
 
     Returns
@@ -67,7 +68,6 @@ def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random
     Tuple[Dataset, Dataset]
         A tuple containing the stratified training and testing datasets.
     """  
-      
     # Set random state
     np.random.seed(random_state)
 
