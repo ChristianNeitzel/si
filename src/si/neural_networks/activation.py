@@ -179,7 +179,7 @@ class ReLUActivation(ActivationLayer):
 # Evaluation Exercise 13.1: TanhActivation class implementation.
 class TanhActivation(ActivationLayer):
     """
-    Tanh activation function.
+    Hyperbolic Tangent (Tanh) activation function.
     """
     def activation_function(self, input: np.ndarray) -> np.ndarray:
         """
@@ -187,39 +187,40 @@ class TanhActivation(ActivationLayer):
 
         Parameters
         ----------
-        input : np.ndarray
+        input : numpy.ndarray
             The input to the layer.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The output of the tanh activation function.
         """
         # np.cosh(input) = 1/2 * (np.exp(input) + np.exp(-input))
         # np.sinh(input) = 1/2 * (np.exp(input) - np.exp(-input))
-
         # np.tanh(input) = np.sinh(input) / np.cosh(input)
         # np.tanh(input) = (np.exp(input) - np.exp(-input)) / (np.exp(input) + np.exp(-input))
-        return np.tanh(input)
-    
+        
+        exp_pos = np.exp(input) # e^x
+        exp_neg = np.exp(-input) # e^(-x)
+        return (exp_pos - exp_neg) / (exp_pos + exp_neg) # Should correspond to np.tanh(input)
+
     def derivative(self, input: np.ndarray) -> np.ndarray:
         """
         Derivative of the tanh activation function.
 
         Parameters
         ----------
-        input : np.ndarray
+        input : numpy.ndarray
             The input to the layer.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The derivative of the tanh activation function.
         """
         # Note: x -> input; f(x) -> self.activation_function(input)
 
-        # return 1 - (self.activation_function(input) ** 2) # Should correspond to: 1 - np.tanh(input) ** 2
-        return 1 - np.tanh(input) ** 2
+        return 1 - (self.activation_function(input) ** 2) # Should correspond to: 1 - np.tanh(input) ** 2
 
 
 # Evaluation Exercise 13.2: SoftmaxActivation class implementation.
@@ -233,12 +234,12 @@ class SoftmaxActivation(ActivationLayer):
 
         Parameters
         ----------
-        input : np.ndarray
+        input : numpy.ndarray
             The input to the layer.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The output probability for each class.
         """
         # Numerical stability fix to prevent large exponents
@@ -251,12 +252,12 @@ class SoftmaxActivation(ActivationLayer):
 
         Parameters
         ----------
-        input : np.ndarray
+        input : numpy.ndarray
             The input to the layer.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The derivative of the activation function.
         """
         # Note: x -> input; f(x) -> self.activation_function(input)
