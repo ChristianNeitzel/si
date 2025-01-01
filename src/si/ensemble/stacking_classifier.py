@@ -9,8 +9,10 @@ from si.metrics.accuracy import accuracy
 
 class StackingClassifier(Model):
     """
-    Stacking Classifier is an ensemble learning technique that combines multiple base models and a final model 
-    to make predictions. The base models are trained independently, and their predictions are used as features 
+    Stacking Classifier ensemble.
+
+    Ensemble learning technique that combines multiple base models to make predictions. 
+    The base models are trained independently, and their predictions are used as features 
     for training the final model.
     """
     def __init__(self, models: List[Model], final_model: Model, **kwargs):
@@ -78,11 +80,13 @@ class StackingClassifier(Model):
 
         Returns
         -------
-        np.ndarray
-            Predicted labels.
+        numpy.ndarray
+            The predicted labels.
         """
+        # Generate predictions from the base models
         base_predictions = np.column_stack([model.predict(dataset) for model in self.models])
 
+        # Get the final predictions using the final model and the predictions of the base models
         predictions = self.final_model.predict(Dataset(X=base_predictions))
 
         return predictions
@@ -96,12 +100,12 @@ class StackingClassifier(Model):
         ----------
         dataset : Dataset
             The dataset to evaluate the model on.
-        predictions : np.ndarray
-            Predictions.
+        predictions : numpy.ndarray
+            The predictions.
 
         Returns
         -------
         score : float
-            Mean accuracy.
+            The mean accuracy.
         """
         return accuracy(dataset.y, predictions)

@@ -1,3 +1,5 @@
+# Evaluation Exercise 11: Implementing the randomized_search_cv function.
+
 from itertools import product
 from typing import Any, Callable, Dict, Tuple
 
@@ -6,7 +8,7 @@ from si.base.model import Model
 from si.data.dataset import Dataset
 from si.model_selection.cross_validate import k_fold_cross_validation
 
-# Evaluation Exercise 11: Implementing the randomized_search_cv function.
+
 def randomized_search_cv(model: Model, 
                          dataset: Dataset,
                          hyperparameter_grid: Dict[str, Tuple],
@@ -20,34 +22,28 @@ def randomized_search_cv(model: Model,
     ----------
     model
         The model to cross validate.
-
     dataset : Dataset
         The dataset to cross validate on.
-
     hyperparameter_grid : Dict[str, Tuple]
         The hyperparameter grid to use.
-
     scoring : Callable
         The scoring function to use.
-
     cv : int
         The cross validation folds.
-
     n_iter: int
         The number of random hyperparameter combinations to evaluate.
 
     Returns
     -------
     results : Dict[str, Any]
-        The results of the randomized search cross validation. Includes the scores, hyperparameters,
-        best hyperparameters and best score.
+        The results of the randomized search cross validation. 
+        Includes the scores, hyperparameters, best hyperparameters and best score.
     """
     # Validate the parameter grid
     for parameter in hyperparameter_grid:
         if not hasattr(model, parameter):
             raise AttributeError(f'Model {model} does not have parameter {parameter}.')
         
-
     # Get all possible hyperparameter combinations
     all_combinations = list(product(*hyperparameter_grid.values()))
 
@@ -56,7 +52,6 @@ def randomized_search_cv(model: Model,
         raise ValueError(f"n_iter cannot exceed the total number of combinations: {len(all_combinations)}")
     sampled_combinations = np.random.choice(len(all_combinations), size=n_iter, replace=False)
     sampled_combinations = [all_combinations[i] for i in sampled_combinations]
-
 
     # Initializing the results dictionary
     results = {

@@ -1,3 +1,5 @@
+# Evaluation Exercise 7.2: Implementing KNNRegressor.
+
 from typing import Callable, Union
 
 import numpy as np
@@ -7,24 +9,12 @@ from si.data.dataset import Dataset
 from si.statistics.euclidean_distance import euclidean_distance
 from si.metrics.rmse import rmse
 
-# Evaluation Exercise 7.2: Implementing KNNRegressor.
+
 class KNNRegressor(Model):
     """
-    KNN Regressor
-    The k-Nearest Neighbors regressor predicts the value of a new sample by averaging
-    the values of its k-nearest neighbors in the training data.
+    K-Nearest Neighbors (KNN) Regressor.
 
-    Parameters
-    ----------
-    k: int
-        The number of nearest neighbors to use.
-    distance: Callable
-        The distance function to use.
-
-    Attributes
-    ----------
-    train_dataset: Dataset
-        The training dataset.
+    Predicts the value of a new sample by averaging the values of its k-nearest neighbors in the training data.
     """
     def __init__(self, k: int = 1, distance: Callable = euclidean_distance, **kwargs):
         """
@@ -69,7 +59,7 @@ class KNNRegressor(Model):
 
         Parameters
         ----------
-        sample : np.ndarray
+        sample : numpy.ndarray
             The sample to get the closest value of.
 
         Returns
@@ -95,7 +85,7 @@ class KNNRegressor(Model):
 
         Returns
         -------
-        predictions : np.ndarray
+        predictions : numpy.ndarray
             The predicted target values.
         """
         predictions = np.apply_along_axis(self._get_closest_value, axis=1, arr=dataset.X)
@@ -111,7 +101,7 @@ class KNNRegressor(Model):
         dataset: Dataset
             The dataset to evaluate the model on.
 
-        predictions: np.ndarray
+        predictions: numpy.ndarray
             An array with the predictions.
 
         Returns
@@ -120,3 +110,5 @@ class KNNRegressor(Model):
             The RMSE value.
         """
         return rmse(dataset.y, predictions)
+    
+# (Evaluation Exercise 7.3 present in file "si/tests/unit_tests/test_knn.py")

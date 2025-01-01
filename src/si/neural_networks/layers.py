@@ -181,14 +181,14 @@ class Dropout(Layer):
 
         Parameters
         ----------
-        input : np.ndarray
+        input : numpy.ndarray
             The input to the layer.
         training : bool
             Whether the layer is in training mode or inference mode.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The output of the layer.
         """
         if training:    # Training is True -> Training mode
@@ -212,12 +212,12 @@ class Dropout(Layer):
 
         Parameters
         ----------
-        output_error : np.ndarray
+        output_error : numpy.ndarray
             The output error of the layer.
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The input error of the layer.
         """
         return output_error * self.mask

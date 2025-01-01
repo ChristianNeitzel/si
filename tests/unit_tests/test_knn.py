@@ -46,7 +46,6 @@ class TestKNN(TestCase):
         self.assertEqual(score, 1)
 
 
-
 # Evaluation Exercise 7.3: Test the "KNNRegressor" class using the "cpu.csv" dataset (regression)
 class TestKNNRegressor(TestCase):
 

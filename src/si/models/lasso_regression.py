@@ -1,14 +1,22 @@
+# Evaluation Exercise 8: Implementing Lasso Regression.
+
 import numpy as np
 from si.base.model import Model
 from si.data.dataset import Dataset
 from si.metrics.mse import mse
 
-# Evaluation Exercise 8: Implementing Lasso Regression
+
 class LassoRegression(Model):
-    def __init__(self, l1_penalty: float = 1.0, scale: bool = True, max_iter: int = 1000, patience: int = 5, tolerance: float = 1e-4, **kwargs):
+    """
+    Least Absolute Shrinkage and Selection Operator (Lasso) Regression.
+    """
+    def __init__(self, l1_penalty: float = 1.0, 
+                 scale: bool = True, 
+                 max_iter: int = 1000, 
+                 patience: int = 5, 
+                 tolerance: float = 1e-4, **kwargs):
         """
         Initializes the Lasso Regression model.
-        (Least Absolute Shrinkage and Selection Operator)
 
         Parameters
         ----------
@@ -27,13 +35,13 @@ class LassoRegression(Model):
             
         Attributes
         ----------
-        theta : np.ndarray
+        theta : numpy.ndarray
             Coefficients for each feature in the dataset.
         theta_zero : float
             The intercept of the model.
-        mean : np.ndarray
+        mean : numpy.ndarray
             The mean of each feature in the dataset.
-        std : np.ndarray
+        std : numpy.ndarray
             The standard deviation of each feature in the dataset.
         """
         # Parameters
@@ -64,14 +72,17 @@ class LassoRegression(Model):
         self : LassoRegression
             The fitted model.
         """
-        # Scale the data
+        # Scale the data (same method as the one used for Ridge Regression)
         if self.scale:
+            # Compute mean and std
             self.mean = np.nanmean(dataset.X, axis=0)
             self.std = np.nanstd(dataset.X, axis=0)
+            # Scale the dataset
             X = (dataset.X - self.mean) / self.std
         else:
             X = dataset.X
 
+        # Predict the values of y
         y = dataset.y
         n_features = X.shape[1]
 
@@ -81,11 +92,12 @@ class LassoRegression(Model):
 
         # Coordinate descent loop
         early_stopping = 0
-        for iter in range(self.max_iter):
-            theta_prev = self.theta.copy() # Associated with convergence tolerance
+        for iter in range(self.max_iter):   # Iterate for max_iter times
+            theta_prev = self.theta.copy()  # Associated with convergence tolerance
 
             # Update coefficients
-            for j in range(n_features):
+            for j in range(n_features):     # Iterate over each feature
+                # Compute the residuals for each feature j
                 residuals = y - (X.dot(self.theta) + self.theta_zero) + self.theta[j] * X[:, j]
                 rho_j = X[:, j].T.dot(residuals)
 
@@ -97,7 +109,7 @@ class LassoRegression(Model):
                 else:
                     self.theta[j] = 0                                                   # Condition 2: soft_threshold = 0 if Module of rho_j =< lambda (or rather, if previous conditions don't occur).
 
-            # Update intercept
+            # Update intercept (Compute the cost function)
             self.theta_zero = np.mean(y - X.dot(self.theta))
 
             # Check for convergence
@@ -111,7 +123,6 @@ class LassoRegression(Model):
 
         return self
 
-
     def _predict(self, dataset: Dataset) -> np.ndarray:
         """
         Predict the dependent variable using the estimated theta coefficients.
@@ -123,18 +134,19 @@ class LassoRegression(Model):
 
         Returns
         -------
-        np.ndarray
-            Predicted values.
+        numpy.ndarray
+            The predicted values.
         """
+        # Scale the data (using the mean and std estimated in the fit method)
         if self.scale:
             X = (dataset.X - self.mean) / self.std
         else:
             X = dataset.X
 
+        # Compute the predicted y
         predictions = X.dot(self.theta) + self.theta_zero
 
         return predictions
-
 
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
         """
@@ -145,12 +157,12 @@ class LassoRegression(Model):
         dataset : Dataset
             The dataset to evaluate the model on.
 
-        predictions: np.ndarray
+        predictions: numpy.ndarray
             Predictions.
 
         Returns
         -------
         float
-            Mean Squared Error (MSE) score.
+            The Mean Squared Error (MSE) score.
         """
         return mse(dataset.y, predictions)

@@ -1,3 +1,5 @@
+# Evaluation Exercise 9: Implementing the RandomForestClassifier class.
+
 from typing import Literal
 
 import numpy as np
@@ -7,7 +9,7 @@ from si.metrics.accuracy import accuracy
 from si.models.decision_tree_classifier import DecisionTreeClassifier
 # from si.statistics.impurity import gini_impurity, entropy_impurity
 
-# Evaluation Exercise 9: Implementing the RandomForestClassifier class.
+
 class RandomForestClassifier(Model):
     def __init__(self, n_estimators: int = 100, 
                  max_features: int = None, 
@@ -112,7 +114,7 @@ class RandomForestClassifier(Model):
 
         Returns
         -------
-        np.ndarray
+        numpy.ndarray
             The predicted values.
         """
         tree_predictions = []
@@ -152,7 +154,7 @@ class RandomForestClassifier(Model):
         ----------
         dataset : Dataset
             The dataset to evaluate the model on.
-        predictions : np.ndarray
+        predictions : numpy.ndarray
             The predicted labels for the dataset.
         
         Return

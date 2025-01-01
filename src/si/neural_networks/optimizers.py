@@ -126,7 +126,7 @@ class Adam(Optimizer):
         """
         # If m and v are not initialized -> initialize them as matrices of zeros.
         if self.m is None or self.v is None:      
-            self.m = np.zeros(np.shape(w)) # Maybe try if np.zeros_like(w) instead of np.zeros(np.shape(w)) also works?
+            self.m = np.zeros(np.shape(w)) # Using 'np.zeros_like(w)' instead of 'np.zeros(np.shape(w))' also works.
             self.v = np.zeros(np.shape(w))
 
         # Update t

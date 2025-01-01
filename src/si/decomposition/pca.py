@@ -1,8 +1,10 @@
+# Evaluation Exercise 5: Implementation of the PCA class.
+
 import numpy as np
 from si.base.transformer import Transformer
 from si.data.dataset import Dataset
 
-# Evaluation Exercise 5: Implementation of the PCA class.
+
 class PCA(Transformer):
     """
     Principal Component Analysis (PCA).
@@ -47,13 +49,13 @@ class PCA(Transformer):
         # Check for valid n_components: must be an integer
         if not isinstance(self.n_components, int):
             raise ValueError(
-                f"Invalid type for n_components: {type(self.n_components).__name__}. "
+                f"Invalid type for n_components: {type(self.n_components).__name__}."
                 f"Expected an integer."
             )
         # Check for valid n_components: must be positive, and less or greater than the number of features
         if self.n_components <= 0 or self.n_components > dataset.shape()[1]:
             raise ValueError(
-                f"Invalid value for n_components: {self.n_components}. "
+                f"Invalid value for n_components: {self.n_components}."
                 f"Must be a positive integer less than or equal to the number of features: {dataset.shape()[1]}."
             )
 
@@ -66,11 +68,9 @@ class PCA(Transformer):
         self.eigenvalues, self.eigenvectors = np.linalg.eigh(self.covariance)   # Eigenvalue decomposition on the covariance matrix
 
         # Step 3: Infer the Principal Components
-        sorted_idx = np.argsort(self.eigenvalues)[-self.n_components:][::-1] 
+        sorted_idx = np.argsort(self.eigenvalues)[-self.n_components:][::-1]
 
         # Step 4: Infer the Explained Variance (EV)
-        # EV of one component is calculated by dividing the eigenvalue of that component with the sum of all eigenvalues
-        # explained_variance corresponds to the first n_components of EV
         self.components = self.eigenvectors[:, sorted_idx].T
         self.explained_variance = self.eigenvalues[sorted_idx] / np.sum(self.eigenvalues)
 
