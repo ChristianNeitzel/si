@@ -104,7 +104,7 @@ if __name__ == '__main__':
     parameter_grid_ = {
         'l2_penalty': np.linspace(1, 10, 10),
         'alpha': np.linspace(0.001, 0.0001, 100),
-        'max_iter': np.linspace(1000, 2000, 200)
+        'max_iter': np.linspace(1000, 2000, 200)    # Note: setting values for this parameter is MANDATORY!
     }
 
     # Cross validate the model

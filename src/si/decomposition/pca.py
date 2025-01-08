@@ -68,7 +68,10 @@ class PCA(Transformer):
         self.eigenvalues, self.eigenvectors = np.linalg.eigh(self.covariance)   # Eigenvalue decomposition on the covariance matrix
 
         # Step 3: Infer the Principal Components
-        sorted_idx = np.argsort(self.eigenvalues)[-self.n_components:][::-1]
+        sorted_idx = np.argsort(self.eigenvalues)[-self.n_components:][::-1]    # Selects idx of the largest n_components eigenvalues, sorts in descending order.
+        # np.argsort sorts eigenvalues in ascending order                   (np.array where smallest eigenvalue idx appear first)
+        # [-self.n_components:] slices the last n_components from the array (np.array of largest n_component eigenvalue idx)
+        # [::-1] reverses the order of the idx                              (np.array of largest n_components eigenvalue idx in descending order)
 
         # Step 4: Infer the Explained Variance (EV)
         self.components = self.eigenvectors[:, sorted_idx].T

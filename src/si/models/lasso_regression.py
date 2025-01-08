@@ -98,7 +98,7 @@ class LassoRegression(Model):
             # Update coefficients
             for j in range(n_features):     # Iterate over each feature
                 # Compute the residuals for each feature j
-                residuals = y - (X.dot(self.theta) + self.theta_zero) + self.theta[j] * X[:, j]
+                residuals = y - (X.dot(self.theta) - self.theta[j] * X[:, j])
                 rho_j = X[:, j].T.dot(residuals)
 
                 # Apply Soft-Thresholding and update theta j
